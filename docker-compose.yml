@@ -1,0 +1,42 @@
+version: '3'
+services:
+  server:
+    image: redash/redash:${REDASH_DOCKER_IMAGE_TAG}
+    command: dev_server
+    depends_on:
+      - create_db
+      - redis
+    ports:
+      - "5000:5000"
+      - "5678:5678"
+    environment: &redash_default_env
+      PYTHONUNBUFFERED: 0
+      REDASH_LOG_LEVEL: "INFO"
+      REDASH_REDIS_URL: "redis://redis:6379/0"
+      REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
+      REDASH_RATELIMIT_ENABLED: "false"
+  create_db:
+    image: redash/redash:${REDASH_DOCKER_IMAGE_TAG}
+    command: create_db
+    depends_on:
+      - postgres
+    environment:
+      <<: *redash_default_env
+  worker:
+    image: redash/redash:${REDASH_DOCKER_IMAGE_TAG}
+    command: scheduler
+    depends_on:
+      - server
+    environment:
+      <<: *redash_default_env
+      QUEUES: "queries,scheduled_queries,celery,schemas"
+      WORKERS_COUNT: 2
+  redis:
+    image: redis:3-alpine
+    restart: unless-stopped
+  postgres:
+    image: postgres:9.5-alpine
+    ports:
+      - "15432:5432"
+    command: "postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF"
+    restart: unless-stopped
