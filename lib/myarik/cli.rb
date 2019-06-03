@@ -8,6 +8,7 @@ class Myarik::CLI < Thor
 
 
   class_option :target
+  class_option :api_key, type: :string, required: false
   class_option :color, type: :boolean, default: true
   class_option :debug, type: :boolean, default: false
 
@@ -17,7 +18,7 @@ class Myarik::CLI < Thor
     cli = client(options)
 
     log(:info, "Apply `#{file}`")
-    updated = client(options).apply(file)
+    updated = cli.apply(file)
 
     unless updated
       log(:info, 'No change'.intense_blue)
