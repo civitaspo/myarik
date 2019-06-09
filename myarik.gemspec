@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  # Auto generated dependencies by codenize-tools/codenize
   spec.add_development_dependency "bundler", "~> 1.17"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
@@ -31,4 +32,7 @@ Gem::Specification.new do |spec|
   #spec.add_dependency 'pp_sort_hash'
   spec.add_dependency 'term-ansicolor'
   spec.add_dependency 'thor'
+
+  # myarik dependencies
+  spec.add_dependency 'faraday', '>= 0.15.4'
 end

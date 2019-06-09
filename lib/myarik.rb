@@ -9,6 +9,8 @@ require 'logger'
 require 'singleton'
 require 'term/ansicolor'
 
+require 'faraday'
+
 require 'myarik/version'
 #require 'myarik/ext/hash_ext'
 require 'myarik/ext/string_ext'
