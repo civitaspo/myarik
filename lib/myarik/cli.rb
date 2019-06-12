@@ -1,12 +1,6 @@
 class Myarik::CLI < Thor
   include Myarik::Logger::Helper
 
-  MAGIC_COMMENT = <<-EOS
-  # -*- mode: ruby -*-
-  # vi: set ft=ruby :
-  EOS
-
-
   class_option :target
   class_option :api_key, type: :string, required: false
   class_option :color, type: :boolean, default: true
