@@ -10,6 +10,7 @@ require 'singleton'
 require 'term/ansicolor'
 
 require 'faraday'
+require 'faraday_middleware'
 
 require 'myarik/version'
 #require 'myarik/ext/hash_ext'
