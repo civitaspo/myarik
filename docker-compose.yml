@@ -22,16 +22,13 @@ services:
       - postgres
     environment:
       <<: *redash_default_env
-  create_root: &redash_manage_default
+  create_root:
     image: redash/redash:${REDASH_DOCKER_IMAGE_TAG}
     command: manage users create_root --password 123456789 admin@example.com admin
     depends_on:
       - create_db
     environment:
       <<: *redash_default_env
-  create_ds:
-    <<: *redash_manage_default
-    command: manage ds new --type pg --options '{"host":"postgres","user":"postgres","password":"postgres","dbname":"postgres"}' redash-db
   worker:
     image: redash/redash:${REDASH_DOCKER_IMAGE_TAG}
     command: scheduler
