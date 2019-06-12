@@ -1,8 +1,9 @@
 class Myarik::CLI < Thor
   include Myarik::Logger::Helper
 
-  class_option :target
-  class_option :api_key, type: :string, required: false
+  class_option :target, type: :string, required: false
+  class_option :redash_url, type: :string, reqired: false
+  class_option :redash_api_key, type: :string, required: false
   class_option :color, type: :boolean, default: true
   class_option :debug, type: :boolean, default: false
 
@@ -42,6 +43,7 @@ class Myarik::CLI < Thor
   def client(options)
     options = options.dup
     underscoreize!(options)
+    fill_required_options!(options: options)
 
     String.colorize = options[:color]
     Myarik::Logger.instance.set_debug(options[:debug])
@@ -60,4 +62,11 @@ class Myarik::CLI < Thor
       end
     end
   end
+
+  def fill_required_options!(options:)
+    %i(redash_url redash_api_key).each do |o|
+      options[o] ||= ENV["MYARIK_#{o.to_s.upcase}"] || raise(Myarik::Error::ConfigError, "'#{o}' must be set.")
+    end
+  end
+
 end
