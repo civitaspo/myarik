@@ -17,12 +17,19 @@ class Myarik::Logger < ::Logger
 
   module Helper
     def log(level, message, log_options = {})
-      global_option = @options || {}
       message = "[#{level.to_s.upcase}] #{message}" unless level == :info
       message << ' (dry-run)' if global_option[:dry_run]
       message = message.send(log_options[:color]) if log_options[:color]
       logger = global_option[:logger] || Myarik::Logger.instance
       logger.send(level, message)
+    end
+
+    def logger
+      global_option[:logger] || Myarik::Logger.instance
+    end
+
+    def global_option
+      @options || {}
     end
   end
 end
