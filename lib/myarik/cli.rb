@@ -48,6 +48,7 @@ class Myarik::CLI < Thor
     String.colorize = options[:color]
     Myarik::Logger.instance.set_debug(options[:debug])
 
+    disable_static_analyzers unless options[:debug]
 
     cli = Myarik::Client.new(options)
   end
@@ -69,4 +70,9 @@ class Myarik::CLI < Thor
     end
   end
 
+  def disable_static_analyzers
+    log(:info, 'Disable static analyzers that means "override", "abstract" modifiers')
+    Overrider.disable = true
+    Abstriker.disable = true
+  end
 end

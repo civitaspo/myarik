@@ -37,4 +37,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry'
   spec.add_dependency 'faraday', '>= 0.15.4'
   spec.add_dependency 'faraday_middleware', '>= 0.13.1'
+  spec.add_dependency 'abstriker', '>=0.1.3'
+  spec.add_dependency 'overrider', '>=0.1.5'
 end

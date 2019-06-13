@@ -9,6 +9,8 @@ require 'logger'
 require 'singleton'
 require 'term/ansicolor'
 
+require 'abstriker'
+require 'overrider'
 require 'forwardable'
 require 'faraday'
 require 'faraday_middleware'

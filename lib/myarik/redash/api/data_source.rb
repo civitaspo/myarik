@@ -3,38 +3,34 @@ module Myarik::Redash::Api
 
     CODENIZE_KEYS = %w(id name type options)
 
-    def create(name:, type:, options:)
+    override def path
+      '/api/data_sources'
+    end
+
+    override def create(data)
       client.post do |req|
-        req.url '/api/data_sources'
-        req.body = {
-          name: name,
-          type: type,
-          options: options,
-        }
+        req.url path
+        req.body = data
       end
     end
 
-    def update(name:, type:, options:)
-      id = id_by_name!(name: name)
+    override def update(data)
+      id = id_by_name!(name: data[:name])
       client.post do |req|
-        req.url "/api/data_sources/#{id}"
-        req.body = {
-          name: name,
-          type: type,
-          options: options,
-        }
+        req.url "#{path}/#{id}"
+        req.body = data
       end
     end
 
-    def list
+    override def list
       client.get {|req|
-        req.url '/api/data_sources'
+        req.url path
       }
       .body
       .map(&:id)
       .map {|id|
         client.get {|req|
-          req.url "/api/data_sources/#{id}"
+          req.url "#{path}/#{id}"
         }
         .body
         .select {|k, _| CODENIZE_KEYS.include?(k)}
@@ -42,10 +38,10 @@ module Myarik::Redash::Api
       }
     end
 
-    def delete(name:)
-      id = id_by_name!(name: name)
+    override def delete(data)
+      id = id_by_name!(name: data[:name])
       client.delete do |req|
-        req.url "/api/data_sources/#{id}"
+        req.url "#{path}/#{id}"
       end
     end
 
