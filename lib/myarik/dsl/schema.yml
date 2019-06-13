@@ -2,7 +2,7 @@
 # see http://www.kuwata-lab.com/kwalify/ruby/users-guide.html
 type: map
 mapping:
-  "server":
+  "data_source":
     type: seq
     sequence:
       - type: map
@@ -10,17 +10,19 @@ mapping:
           "_id":
             type: str
             required: yes
-          "middleware":
+          "name":
             type: str
             required: yes
-          "tag":
-            type: seq
-            sequence:
-              - type: map
-                mapping:
-                  "key":
-                    type: str
-                    required: true
-                  "value":
-                    type: str
-                    required: true
+          "type":
+            type: str
+            required: yes
+          "options":
+            type: map
+            mapping:
+              # TODO: support all options
+              "host":
+                type: str
+              "user":
+                type: str
+              "dbname":
+                type: str

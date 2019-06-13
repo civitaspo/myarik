@@ -11,8 +11,8 @@ class Myarik::Driver
     log(:info, "Create '#{name}'", color: :cyan)
 
     unless @options[:dry_run]
-      # FIXME:
-      warn 'FIXME: Driver#create() not implemented'.yellow
+      attrs.update('name' => name)
+      @client.create(**symbolize(attrs))
     end
   end
 
@@ -20,8 +20,7 @@ class Myarik::Driver
     log(:info, "Delete '#{name}'", color: :red)
 
     unless @options[:dry_run]
-      # FIXME:
-      warn 'FIXME: Driver#delete() not implemented'.yellow
+      @client.delete(name: name)
     end
   end
 
@@ -30,8 +29,12 @@ class Myarik::Driver
     log(:info, diff(old_attrs, attrs, color: @options[:color]), color: false)
 
     unless @options[:dry_run]
-      # FIXME:
-      warn 'FIXME: Driver#update() not implemented'.yellow
+      attrs.update('name' => name)
+      @client.update(**symbolize(attrs))
     end
+  end
+
+  private def symbolize(attrs)
+    attrs.map {|k, v| [k.to_sym, v] }.to_h
   end
 end

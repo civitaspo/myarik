@@ -3,10 +3,9 @@ class Myarik::Client
 
   def initialize(options = {})
     @options = options
-    # FIXME: create api client
-    @client = @options[:client] # || YourService::Client.new
-    @driver = Myarik::Driver.new(@client, options)
-    @exporter = Myarik::Exporter.new(@client, @options)
+    @client = @options[:client] || Myarik::Redash::Client.new(url: options[:redash_url], api_key: options[:redash_api_key])
+    @driver = Myarik::Driver.new(@client.data_source, options)
+    @exporter = Myarik::Exporter.new(@client.data_source, @options)
   end
 
   def export
@@ -30,12 +29,9 @@ class Myarik::Client
   private
 
   def walk(expected, actual)
-    # FIXME:
-    warn 'FIXME: Client#walk() not implemented'.yellow
-
-    # FIXME: this is an example
-    expected = expected.fetch('server')
-    actual = actual.fetch('server')
+    # FIXME: handle more resources.
+    expected = expected.fetch('data_source')
+    actual = actual.fetch('data_source')
 
     updated = false
 
@@ -45,6 +41,8 @@ class Myarik::Client
       actual_attrs = actual.delete(name)
 
       if actual_attrs
+        # TODO: exclude id ?
+
         if expected_attrs != actual_attrs
           @driver.update(name, expected_attrs, actual_attrs)
           updated = true

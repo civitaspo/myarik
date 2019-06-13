@@ -7,18 +7,16 @@ class Myarik::Exporter
   end
 
   def export
-    # FIXME:
-    warn 'FIXME: Exporter#export() not implemented'.yellow
-
-    # FIXME: this is an example
-    {"server"=>
-      {"web"=>
-        {"middleware"=>"nginx",
-         "tag"=>
-          [{"key"=>"Name", "value"=>"web-001"}, {"key"=>"Role", "value"=>"Web"}]},
-       "database"=>
-        {"middleware"=>"mysql",
-         "tag"=>
-          [{"key"=>"Name", "value"=>"db-002"}, {"key"=>"Role", "value"=>"DB"}]}}}
+    {}.tap do |results|
+      results["data_source"] = {}.tap do |data_source|
+        @client.list.each do |ds|
+          data_source[ds.name] = {
+            'name' => ds.name,
+            'type' => ds.type,
+            'options' => ds.options,
+          }
+        end
+      end
+    end
   end
 end
