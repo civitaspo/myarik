@@ -22,7 +22,7 @@ mapping:
               # TODO: support all options
               "host":
                 type: str
-              "user":
-                type: str
               "dbname":
+                type: str
+              "user":
                 type: str
