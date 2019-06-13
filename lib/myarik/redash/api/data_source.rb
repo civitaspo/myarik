@@ -28,6 +28,7 @@ module Myarik::Redash::Api
       }
       .body
       .map(&:id)
+        .sort
       .map {|id|
         client.get {|req|
           req.url "#{path}/#{id}"
@@ -46,7 +47,7 @@ module Myarik::Redash::Api
     end
 
     private def id_by_name(name:)
-      list.select {|ds| ds.name == name}.first.id
+      list.select {|ds| ds.name == name}.sort_by(&:id).first.id
     end
 
     private def id_by_name!(name:)

@@ -1,6 +1,7 @@
 class Myarik::Driver
   include Myarik::Logger::Helper
   include Myarik::Utils::Diff
+  include Myarik::Utils::DupMarker
 
   def initialize(client, options = {})
     @client = client
@@ -8,6 +9,7 @@ class Myarik::Driver
   end
 
   def create(name, attrs)
+    name = without_dup_mark(name)
     log(:info, "Create '#{name}'", color: :cyan)
 
     unless @options[:dry_run]
@@ -17,14 +19,16 @@ class Myarik::Driver
   end
 
   def delete(name, attrs)
-    log(:info, "Delete '#{name}'", color: :red)
+    n = without_dup_mark(name)
+    log(:info, "Delete '#{n}' (Duplication: #{n != name})", color: :red)
 
     unless @options[:dry_run]
-      @client.delete(name: name)
+      @client.delete(name: n)
     end
   end
 
   def update(name, attrs, old_attrs)
+    name = without_dup_mark(name)
     log(:info, "Update '#{name}'", color: :green)
     log(:info, diff(old_attrs, attrs, color: @options[:color]), color: false)
 
