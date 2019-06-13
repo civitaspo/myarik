@@ -9,19 +9,23 @@ class Myarik::Exporter
 
   def export
     {}.tap do |results|
-      results["data_source"] = {}.tap do |data_source|
-        @client.list.each do |ds|
-          data = {
-            'name' => ds.name,
-            'type' => ds.type,
-            'options' => ds.options,
-          }
-          if data_source[ds.name]
-            # NOTE: To remove duplicated named resource
-            data_source[with_dup_mark(ds.name)] = data
-            next
-          end
-          data_source[ds.name] = data
+      results["data_source"] = export_data_sources
+    end
+  end
+
+  private def export_data_sources
+    @client.list.inject({}) do |results, ds|
+      results.tap do |r|
+        data = {
+          'name' => ds.name,
+          'type' => ds.type,
+          'options' => ds.options,
+        }
+        if r[ds.name]
+          # NOTE: To remove duplicated named resource
+          r[with_dup_mark(ds.name)] = data
+        else
+          r[ds.name] = data
         end
       end
     end
