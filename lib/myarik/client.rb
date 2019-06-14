@@ -43,9 +43,10 @@ class Myarik::Client
         actual_attrs = actual.delete(name)
 
         if actual_attrs
-          # TODO: exclude id ?
+          actual_attrs_without_id = actual_attrs.dup
+          actual_attrs_without_id.delete(:id)
 
-          if expected_attrs != actual_attrs
+          if expected_attrs != actual_attrs_without_id
             driver.update(name, expected_attrs, actual_attrs)
             updated = true
           end
