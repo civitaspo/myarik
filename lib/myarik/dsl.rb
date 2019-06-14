@@ -1,4 +1,7 @@
 class Myarik::DSL
+
+  ROOT_KEYS = %w(data_source)
+
   class << self
     def convert(exported)
       Dslh.deval(exported, root_identify: true)

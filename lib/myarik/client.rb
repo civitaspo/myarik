@@ -4,8 +4,7 @@ class Myarik::Client
   def initialize(options = {})
     @options = options
     @client = @options[:client] || Myarik::Redash::Client.new(url: options[:redash_url], api_key: options[:redash_api_key])
-    @driver = Myarik::Driver.new(@client.data_source, options)
-    @exporter = Myarik::Exporter.new(@client.data_source, @options)
+    @exporter = Myarik::Exporter.new(@client, @options)
   end
 
   def export
@@ -29,34 +28,38 @@ class Myarik::Client
   private
 
   def walk(expected, actual)
-    # FIXME: handle more resources.
-    expected = expected.fetch('data_source')
-    actual = actual.fetch('data_source')
-
     updated = false
 
-    expected.each do |name, expected_attrs|
-      next unless target?(name)
+    Myarik::DSL::ROOT_KEYS.each do |target_resource|
+      # FIXME: handle more resources.
+      expected = expected.fetch(target_resource)
+      actual = actual.fetch(target_resource)
 
-      actual_attrs = actual.delete(name)
+      driver = new_driver(target_resource)
 
-      if actual_attrs
-        # TODO: exclude id ?
+      expected.each do |name, expected_attrs|
+        next unless target?(name)
 
-        if expected_attrs != actual_attrs
-          @driver.update(name, expected_attrs, actual_attrs)
+        actual_attrs = actual.delete(name)
+
+        if actual_attrs
+          # TODO: exclude id ?
+
+          if expected_attrs != actual_attrs
+            driver.update(name, expected_attrs, actual_attrs)
+            updated = true
+          end
+        else
+          driver.create(name, expected_attrs)
           updated = true
         end
-      else
-        @driver.create(name, expected_attrs)
+      end
+
+      actual.each do |name, actual_attrs|
+        next unless target?(name)
+        driver.delete(name, actual_attrs)
         updated = true
       end
-    end
-
-    actual.each do |name, actual_attrs|
-      next unless target?(name)
-      @driver.delete(name, actual_attrs)
-      updated = true
     end
 
     updated
@@ -72,5 +75,9 @@ class Myarik::Client
     else
       raise TypeError, "can't convert #{file} into File"
     end
+  end
+
+  def new_driver(target_resource)
+    Myarik::Driver.new(@client.send(target_resource.to_sym), @options)
   end
 end
