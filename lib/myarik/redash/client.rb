@@ -7,6 +7,13 @@ module Myarik::Redash
 
     attr_reader :url, :api_key
 
+    Myarik::DSL::ROOT_KEYS.each do |resource|
+      klass = resource.split('_').collect!(&:capitalize).join
+      define_method(resource.to_sym) do
+        Object.const_get("Myarik::Redash::Api::#{klass}").new(client: self)
+      end
+    end
+
     def initialize(url:, api_key:)
       @url = url
       @api_key = api_key
@@ -28,11 +35,6 @@ module Myarik::Redash
         f.adapter Faraday.default_adapter
       end
     end
-
-    def data_source
-      Api::DataSource.new(client: self)
-    end
-
 
   end
 end
