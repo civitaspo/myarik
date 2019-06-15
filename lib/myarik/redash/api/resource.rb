@@ -22,13 +22,24 @@ module Myarik::Redash::Api
           req.url complete_path(data)
           req.body = data if REQUEST_BODY_REQUIRED_REST_METHODS.include?(m)
         end
-        res.body
+        hashify(res.body)
       end
     end
 
     private def complete_path(data)
       return path unless path.include?(":id")
       path.gsub(%r{:id}, data['id'].to_s)
+    end
+
+    private def hashify(data)
+      data = {} if data.nil?
+      if data.is_a?(Array)
+        data.map do |h|
+          Hashie::Mash.new(h)
+        end
+      else
+        Hashie::Mash.new(data)
+      end
     end
 
   end
