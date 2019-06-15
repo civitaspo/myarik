@@ -15,6 +15,7 @@ require 'securerandom'
 require 'forwardable'
 require 'faraday'
 require 'faraday_middleware'
+require 'set'
 
 require 'myarik/version'
 #require 'myarik/ext/hash_ext'
