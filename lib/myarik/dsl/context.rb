@@ -42,10 +42,22 @@ class Myarik::DSL::Context
         def context
           @context
         end
+
+        def require(file)
+          redashfile = (file =~ %r|\A/|) ? file : File.expand_path(File.join(File.dirname(@path), file))
+        
+          if File.exist?(redashfile)
+            instance_eval(File.read(redashfile), redashfile)
+          elsif File.exist?(redashfile + '.rb')
+            instance_eval(File.read(redashfile + '.rb'), redashfile + '.rb')
+          else
+            Kernel.require(file)
+          end
+        end
       EOS
     end
 
-    scope_vars = {templates: @templates, context: @context}
+    scope_vars = {templates: @templates, context: @context, path: @path}
 
     begin
       Dslh.eval(dsl, {
