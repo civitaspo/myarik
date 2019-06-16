@@ -3,8 +3,8 @@ class Myarik::Driver
   include Myarik::Utils::Diff
   include Myarik::Utils::DupMarker
 
-  def initialize(client, options = {})
-    @client = client
+  def initialize(model, options = {})
+    @model = model
     @options = options
   end
 
@@ -14,7 +14,7 @@ class Myarik::Driver
 
     unless @options[:dry_run]
       attrs.update('name' => name)
-      @client.create(**symbolize(attrs))
+      @model.create(**symbolize(attrs))
     end
   end
 
@@ -23,7 +23,7 @@ class Myarik::Driver
     log(:info, "Delete '#{n}' (Duplication: #{n != name})", color: :red)
 
     unless @options[:dry_run]
-      @client.delete(name: n)
+      @model.delete(name: n)
     end
   end
 
@@ -34,7 +34,7 @@ class Myarik::Driver
 
     unless @options[:dry_run]
       attrs.update('name' => name)
-      @client.update(**symbolize(attrs))
+      @model.update(**symbolize(attrs))
     end
   end
 

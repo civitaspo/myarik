@@ -3,18 +3,37 @@ class Myarik::Client
 
   def initialize(options = {})
     @options = options
-    @client = @options[:client] || Myarik::Redash::Client.new(url: options[:redash_url], api_key: options[:redash_api_key])
-    @exporter = Myarik::Exporter.new(@client, @options)
+    @client = @options[:client] || Myarik::Redash::Api::Client.new(
+      url: options[:redash_url],
+      api_key: options[:redash_api_key]
+    )
+    @mf = Myarik::Redash::Model.factory(api_client: @client)
   end
 
   def export
-    expected = @exporter.export
-    Myarik::DSL.convert(expected)
+    Myarik::DSL.convert(export_actual)
+  end
+
+  private def export_actual
+    Myarik::DSL::ROOT_KEYS.reduce({}) do |results, key|
+      results.tap do |r|
+        exporter = new_exporter(key)
+        r[key] = exporter.export
+      end
+    end
+  end
+
+  private def new_exporter(target_resource)
+    Myarik::Exporter.new(@mf.create(target_resource), @options)
+  end
+
+  private def new_driver(target_resource)
+    Myarik::Driver.new(@mf.create(target_resource), @options)
   end
 
   def apply(file)
     expected = load_file(file)
-    actual =  @exporter.export
+    actual =  export_actual
 
     updated = walk(expected, actual)
 
@@ -25,9 +44,7 @@ class Myarik::Client
     end
   end
 
-  private
-
-  def walk(expected, actual)
+  private def walk(expected, actual)
     updated = false
 
     Myarik::DSL::ROOT_KEYS.each do |target_resource|
@@ -66,7 +83,7 @@ class Myarik::Client
     updated
   end
 
-  def load_file(file)
+  private def load_file(file)
     if file.kind_of?(String)
       open(file) do |f|
         Myarik::DSL.parse(f.read, file, @options)
@@ -76,9 +93,5 @@ class Myarik::Client
     else
       raise TypeError, "can't convert #{file} into File"
     end
-  end
-
-  def new_driver(target_resource)
-    Myarik::Driver.new(@client.send(target_resource.to_sym), @options)
   end
 end
