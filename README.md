@@ -1,8 +1,6 @@
 # Myarik
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/myarik`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Myarik is a codenize-tool for Redash.
 
 ## Installation
 
@@ -22,17 +20,60 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+1. Go to your profile page (`<your redash url>/users/me`).
+1. Get your api key.
+1. Export your api key as `MYARIK_REDASH_API_KEY`.
+   ```
+   export MYARIK_REDASH_API_KEY=YOUR_REDASH_API_KEY
+   ```
+1. Prepare resource definitions.
+   ```
+   data_source 'redash-db' do
+     name 'redash-db'
+     type 'pg'
+     options do
+       host 'postgres'
+       user 'postgres'
+       dbname 'postgres'
+     end
+   end
+
+   ```
+1. Run myarik
+   ```
+   myarik apply path/to/resource_definition.rb --redash-url <your redash url>
+   ```
+
+## Codenizable Resources
+### `data_source`
+* **name**: DataSource name (string, required)
+* **type**: DataSource type (string, required)
+* **options**: DataSource options (map, optional)
+    * Configuable options depends on **type**.
+        * You can see the options by `<your redash url>/api/data_sources/types`.
+        * Secret options are not configuable, because Redash api does not return the value.
+
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+1. Setup local Redash.
+   ```
+   docker-compose up
+   ```
+1. Go to your profile page (`<your redash url>/users/me`).
+1. Get your api key.
+1. Export your api key as `MYARIK_REDASH_API_KEY`.
+   ```
+   export MYARIK_REDASH_API_KEY=YOUR_REDASH_API_KEY
+   ```
+1. Run examples
+   ```
+    myarik apply example/Redashfile --redash-url http://localhost:5000 
+   ```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/myarik. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/civitaspo/myarik. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
