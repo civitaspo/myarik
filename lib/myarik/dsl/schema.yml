@@ -2,27 +2,182 @@
 # see http://www.kuwata-lab.com/kwalify/ruby/users-guide.html
 type: map
 mapping:
-  "data_source":
+  data_source:
     type: seq
     sequence:
       - type: map
         mapping:
-          "_id":
+          _id:
             type: str
             required: yes
-          "name":
+          name:
             type: str
             required: yes
-          "type":
+          type:
             type: str
             required: yes
-          "options":
+          options:
             type: map
             mapping:
-              # TODO: support all options
-              "host":
+              # curl -H "Authorization: Key $(./get_admin_api_key.sh)" http://localhost:5000/api/data_sources/types | \
+              # ruby -ryaml -rjson -e '
+              #   JSON.parse(STDIN.read)
+              #     .map{|c|
+              #       secrets = c["configuration_schema"]["secret"] || [];
+              #       c["configuration_schema"]["properties"]
+              #         .reject{|k,_|
+              #           secrets.include?(k)
+              #         }
+              #         .map{|k, prop|
+              #           { k => {"type" => prop["type"]}
+              #         }
+              #       }
+              #     }
+              #     .uniq
+              #     .inject({}) {|r, x|
+              #       x.each{|n|r.merge!(n)};
+              #       r
+              #     }
+              #     .tap{|x|
+              #       puts x.to_yaml
+              #     }
+              # '
+              kms_key:
                 type: str
-              "dbname":
+              aws_access_key:
                 type: str
-              "user":
+              region:
                 type: str
+              s3_staging_dir:
+                type: str
+              glue:
+                type: bool
+              encryption_option:
+                type: str
+              schema:
+                type: str
+              access_key:
+                type: str
+              use_aws_iam_profile:
+                type: bool
+              server:
+                type: str
+              url:
+                type: str
+              username:
+                type: str
+              allowed_schemas:
+                type: str
+              min_insert_date:
+                type: str
+              protocol:
+                type: str
+              timeout:
+                type: number
+              trust_certificate:
+                type: bool
+              limit:
+                type: number
+              hostname:
+                type: str
+              expression:
+                type: str
+              port:
+                type: number
+              userDefinedFunctionResourceUri:
+                type: str
+              useStandardSql:
+                type: bool
+              location:
+                type: str
+              loadSchema:
+                type: bool
+              totalMBytesProcessedLimit:
+                type: number
+              projectId:
+                type: str
+              maximumBillingTier:
+                type: number
+              user:
+                type: str
+              dbname:
+                type: str
+              host:
+                type: str
+              sslmode:
+                type: str
+              http_path:
+                type: str
+              database:
+                type: str
+              scheme:
+                type: str
+              basic_auth_user:
+                type: str
+              verify:
+                type: bool
+              http_scheme:
+                type: str
+              use_ldap:
+                type: bool
+              ldap_user:
+                type: str
+              project:
+                type: str
+              tds_version:
+                type: str
+              charset:
+                type: str
+              db:
+                type: str
+              connectionString:
+                type: str
+              dbName:
+                type: str
+              replicaSetName:
+                type: str
+              ssl_key:
+                type: str
+              ssl_cert:
+                type: str
+              ssl_cacert:
+                type: str
+              use_ssl:
+                type: bool
+              catalog:
+                type: str
+              cluster:
+                type: str
+              endpoint:
+                type: str
+              query_type:
+                type: str
+              api_server:
+                type: str
+              sandbox:
+                type: bool
+              api_version:
+                type: str
+              account:
+                type: str
+              warehouse:
+                type: str
+              dbpath:
+                type: str
+              apikey:
+                type: str
+              type:
+                type: str
+              get_schema:
+                type: bool
+              verify_ssl:
+                type: bool
+              customer_id:
+                type: str
+              read_timeout:
+                type: number
+              connection_timeout:
+                type: number
+              token:
+                type: str
+
