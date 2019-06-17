@@ -38,6 +38,8 @@ module Myarik::Redash
     end
     abstract def all
     end
+    abstract def find_by(name)
+    end
     abstract def delete(data)
     end
   end
