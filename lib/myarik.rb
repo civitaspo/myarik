@@ -11,6 +11,7 @@ require 'term/ansicolor'
 
 require 'abstriker'
 require 'overrider'
+require 'finalist'
 require 'securerandom'
 require 'forwardable'
 require 'faraday'

@@ -74,5 +74,6 @@ class Myarik::CLI < Thor
     log(:info, 'Disable static analyzers that means "override", "abstract" modifiers')
     Overrider.disable = true
     Abstriker.disable = true
+    Finalist.disable = true
   end
 end
