@@ -8,10 +8,10 @@ class Myarik::Exporter
   end
 
   def export
-    @model.all.reduce({}) do |results, resource|
+    @model.all.map(&:mash).reduce({}) do |results, resource|
       results.tap do |r|
-        k = resource.name
-        k = with_dup_mark(resource.name) if r.has_key?(k)
+        k = resource.name.dup
+        k = with_dup_mark(k) if r.has_key?(k)
         r[k] = resource
       end
     end

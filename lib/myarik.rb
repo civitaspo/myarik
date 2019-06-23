@@ -19,7 +19,7 @@ require 'faraday_middleware'
 require 'set'
 
 require 'myarik/version'
-#require 'myarik/ext/hash_ext'
+require 'myarik/ext/hash_ext'
 require 'myarik/ext/string_ext'
 require 'myarik/logger'
 require 'myarik/error'

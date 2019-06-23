@@ -12,21 +12,13 @@ module Myarik::Redash
       api_client.data_source.post(data)
     end
 
-    override def all
-      sorted_ds_ids = api_client.data_sources.get.map(&:id).sort
-      sorted_ds_ids.map(&method(:data_source))
-    end
-
-    override def find_by(data)
-      id = api_client.data_sources.get.select { |ds|
-        data.reduce(true) { |bool, (k, v)|
+    override def where(condition = {})
+      dss = api_client.data_sources.get.select do |ds|
+        condition.mash.reduce(true) do |bool, (k, v)|
           bool and ds[k] == v
-        }
-      }.first
-
-      return nil unless id
-
-      data_source(id)
+        end
+      end
+      dss.map(&:mash).map(&:id).sort.map(&method(:data_source))
     end
 
     override def delete(data)
@@ -34,10 +26,8 @@ module Myarik::Redash
     end
 
     private def data_source(id)
-      props = api_client.data_source.get('id' => id)
-      props
-        .select { |k, _| CODENIZE_KEYS.include?(k) }
-        .yield_self { |h| Hashie::Mash.new(h) }
+      props = api_client.data_source.get(id: id)
+      props.select { |k, _| CODENIZE_KEYS.include?(k) }
     end
   end
 end

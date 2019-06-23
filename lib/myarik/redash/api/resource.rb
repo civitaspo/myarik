@@ -19,27 +19,16 @@ module Myarik::Redash::Api
 
       define_singleton_method(m) do |data = {}|
         res = client.send(m) do |req|
-          req.url complete_path(data)
+          req.url complete_path(data.mash)
           req.body = data if REQUEST_BODY_REQUIRED_REST_METHODS.include?(m)
         end
-        hashify(res.body)
+        res.body
       end
     end
 
     private def complete_path(data)
       return path unless path.include?(":id")
-      path.gsub(%r{:id}, data['id'].to_s)
-    end
-
-    private def hashify(data)
-      data = {} if data.nil?
-      if data.is_a?(Array)
-        data.map do |h|
-          Hashie::Mash.new(h)
-        end
-      else
-        Hashie::Mash.new(data)
-      end
+      path.gsub(%r{:id}, data.id.to_s)
     end
 
   end

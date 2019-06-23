@@ -18,7 +18,7 @@ class Myarik::Client
     Myarik::DSL::ROOT_KEYS.reduce({}) do |results, key|
       results.tap do |r|
         exporter = new_exporter(key)
-        r[key] = exporter.export
+        r[key] = exporter.export.mash
       end
     end
   end
@@ -48,9 +48,8 @@ class Myarik::Client
     updated = false
 
     Myarik::DSL::ROOT_KEYS.each do |target_resource|
-      # FIXME: handle more resources.
-      expected = expected.fetch(target_resource)
-      actual = actual.fetch(target_resource)
+      expected = expected.fetch(target_resource, {})
+      actual = actual.fetch(target_resource, {})
 
       driver = new_driver(target_resource)
 
@@ -61,7 +60,7 @@ class Myarik::Client
 
         if actual_attrs
           actual_attrs_without_id = actual_attrs.dup
-          actual_attrs_without_id.delete(:id)
+          actual_attrs_without_id.delete('id')
 
           if expected_attrs != actual_attrs_without_id
             driver.update(name, expected_attrs, actual_attrs)

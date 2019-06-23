@@ -20,10 +20,17 @@ class Myarik::Driver
 
   def delete(name, attrs)
     n = without_dup_mark(name)
-    log(:info, "Delete '#{n}' (Duplication: #{n != name})", color: :red)
+    reason =
+      if n != name
+        "Duplicated resource"
+      else
+        "Unexpected resource"
+      end
+    log(:info, "Delete '#{n}' (Reason: #{reason}, attributes: #{attrs.to_json})", color: :red)
 
     unless @options[:dry_run]
-      @model.delete(name: n)
+      attrs.update('name' => n)
+      @model.delete(**symbolize(attrs))
     end
   end
 

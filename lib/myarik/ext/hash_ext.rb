@@ -9,6 +9,10 @@ module Myarik::Ext
       self
     end
 
+    def mash
+      Hashie::Mash.new(self)
+    end
+
     private
 
     def sort_array0(value)
