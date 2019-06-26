@@ -13,14 +13,14 @@ module Myarik::Redash
     end
 
     override def where(condition = {})
-      @all_dss ||= api_client.data_sources.get
-                     .map { |ds| ds['id'] }
-                     .sort
-                     .map(&method(:data_source))
+      @all_data_sources ||= api_client.data_sources.get
+                              .map { |ds| ds['id'] }
+                              .sort
+                              .map(&method(:find_data_source))
 
-      return @all_dss if condition.empty?
+      return @all_data_sources if condition.empty?
 
-      @all_dss.select do |ds|
+      @all_data_sources.select do |ds|
         condition.reduce(true) do |bool, (k, v)|
           bool and ds[k.to_s] == v
         end
@@ -31,7 +31,7 @@ module Myarik::Redash
       api_client.data_source.delete(data)
     end
 
-    private def data_source(id)
+    private def find_data_source(id)
       props = api_client.data_source.get(id: id)
       props.select { |k, _| CODENIZE_KEYS.include?(k) }
     end
