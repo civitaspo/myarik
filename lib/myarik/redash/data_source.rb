@@ -14,16 +14,15 @@ module Myarik::Redash
 
     override def where(condition = {})
       @all_dss ||= api_client.data_sources.get
-                     .map(&:mash)
-                     .map(&:id)
+                     .map { |ds| ds['id'] }
                      .sort
                      .map(&method(:data_source))
 
       return @all_dss if condition.empty?
 
       @all_dss.select do |ds|
-        condition.mash.reduce(true) do |bool, (k, v)|
-          bool and ds[k] == v
+        condition.reduce(true) do |bool, (k, v)|
+          bool and ds[k.to_s] == v
         end
       end
     end
