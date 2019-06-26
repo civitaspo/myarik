@@ -22,6 +22,7 @@ services:
       - postgres
     environment:
       <<: *redash_default_env
+    restart: on-failure
   create_root:
     image: redash/redash:${REDASH_DOCKER_IMAGE_TAG}
     command: manage users create_root --password 123456789 admin@example.com admin
@@ -38,6 +39,7 @@ services:
       <<: *redash_default_env
       QUEUES: "queries,scheduled_queries,celery,schemas"
       WORKERS_COUNT: 2
+    restart: on-failure
   redis:
     image: redis:3-alpine
     restart: unless-stopped
