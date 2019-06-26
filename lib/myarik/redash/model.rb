@@ -21,6 +21,21 @@ module Myarik::Redash
         Factory.new(api_client: api_client)
       end
 
+      def depends_on(*resources)
+        resources.map(&:to_sym).each do |r|
+          define_method r do
+            v = instance_variable_get("@#{r}")
+            return v if v
+
+            f = self.class.factory(api_client: self.api_client)
+
+            f.create(r).tap do |m|
+              instance_variable_set("@#{r}", m)
+            end
+          end
+        end
+      end
+
     end
 
     extend Abstriker
@@ -31,11 +46,6 @@ module Myarik::Redash
 
     def initialize(api_client:)
       @api_client = api_client
-    end
-
-    final def model(name)
-      @factory ||= Model.factory(api_client: api_client)
-      @factory.create(name)
     end
 
     abstract def create(data)
