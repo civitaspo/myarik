@@ -22,6 +22,7 @@ module Myarik::Redash::Api
           req.url complete_path(data.mash)
           req.body = data if REQUEST_BODY_REQUIRED_REST_METHODS.include?(m)
         end
+        raise Myarik::Error::RedashApiError, res.body.to_json unless res.success?
         res.body
       end
     end
