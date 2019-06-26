@@ -35,7 +35,6 @@ module Myarik::Redash::Api
         f.request :json
         # TODO: This logging is so noisy, so will create a better logging strategy.
         # f.response :logger, logger
-        f.response :mashify
         f.response :json
         f.adapter Faraday.default_adapter
       end
