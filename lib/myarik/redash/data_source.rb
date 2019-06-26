@@ -13,12 +13,19 @@ module Myarik::Redash
     end
 
     override def where(condition = {})
-      dss = api_client.data_sources.get.select do |ds|
+      @all_dss ||= api_client.data_sources.get
+                     .map(&:mash)
+                     .map(&:id)
+                     .sort
+                     .map(&method(:data_source))
+
+      return @all_dss if condition.empty?
+
+      @all_dss.select do |ds|
         condition.mash.reduce(true) do |bool, (k, v)|
           bool and ds[k] == v
         end
       end
-      dss.map(&:mash).map(&:id).sort.map(&method(:data_source))
     end
 
     override def delete(data)
