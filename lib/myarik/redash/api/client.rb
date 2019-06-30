@@ -9,8 +9,8 @@ module Myarik::Redash::Api
       data_source_types: {path: '/api/data_sources/types', rest_methods: %i(get)},
       data_sources: {path: '/api/data_sources', rest_methods: %i(get post)},
       data_source: {path: '/api/data_sources/:id', rest_methods: %i(get post delete)},
-      queries: {path: '/api/querie', rest_methods: %i(post get)},
-      query: {path: '/api/queries/:id', rest_methods: %i(post get delete)}
+      queries: {path: '/api/queries', rest_methods: %i(get_with_paging post)},
+      query: {path: '/api/queries/:id', rest_methods: %i(get post delete)}
     }
 
     attr_reader :url, :api_key
